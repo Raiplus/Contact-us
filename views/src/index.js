@@ -54,10 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 successPopup.classList.remove('hidden');
                 contactForm.reset();
             } else {
+                alert(response.statusText)
                 console.error('Server error:', response.statusText);
             }
 
         } catch (err) {
+            
             console.error('Network or code error:', err);
             alert('network problem pless refresh your page or try to resolve internet problm')
         }

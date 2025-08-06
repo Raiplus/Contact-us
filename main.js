@@ -4,16 +4,24 @@ import cors from 'cors'
 import { User } from './models/user/user.js'
 import dotenv from 'dotenv'
 import nodemailer from 'nodemailer'
+import rateLimit from 'express-rate-limit';
 
 
 const app = express()
 app.use(cors())
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 20, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+});
+
+app.use(limiter);
 dotenv.config();
 app.use(express.json())
 
 await mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-     console.log('mongoose cconnected') 
+  .then(() => {
+    console.log('mongoose cconnected')
 
   })
   .catch(() => {
@@ -26,7 +34,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 ////
-async function sendResponseEmail(user_email,quarry) {
+async function sendResponseEmail(user_email, quarry) {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -39,8 +47,8 @@ async function sendResponseEmail(user_email,quarry) {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: user_email,
-     subject: 'Re: Hello from Raiplus!',
-  html: `
+      subject: 'Re: Hello from Raiplus!',
+      html: `
     <p>Hi there,</p>
     <p>Thanks for reaching out.</p>
     <p>I've received your email and will get back to you as soon as possible.</p>
@@ -60,7 +68,7 @@ async function sendResponseEmail(user_email,quarry) {
   }
 }
 
-  
+
 
 
 
@@ -73,7 +81,7 @@ app.post('/api/contact', async (req, res) => {
 
   let user = new User({ Name: data.body.name, email: data.body.email, quarry: data.body.query })
   await user.save()
-      sendResponseEmail(data.body.email,data.body.query)
+  sendResponseEmail(data.body.email, data.body.query)
 
   res.send({ message: 'Query raised' });
 })
