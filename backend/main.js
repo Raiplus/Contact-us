@@ -30,9 +30,6 @@ await mongoose.connect(process.env.MONGO_URI)
 const port = 3000
 app.use(express.static('views'))
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 ////
 async function sendResponseEmail(user_email, quarry) {
   try {
