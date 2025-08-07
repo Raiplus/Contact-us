@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('https://contact-us-7kco.onrender.com/contact', {
+            const response = await fetch('https://contact-us-7kco.onrender.com/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
